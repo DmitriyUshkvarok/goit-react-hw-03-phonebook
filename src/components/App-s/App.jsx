@@ -5,6 +5,8 @@ import Filter from '../Filter/Filter';
 import ContactForm from '../ContactForm/ContactForm';
 import css from './App.module.css';
 
+const CONTACTS_KEY = 'contacts';
+
 class App extends Component {
   state = {
     contacts: [],
@@ -49,6 +51,22 @@ class App extends Component {
   setFilterValue = e => {
     this.setState({ filter: e.currentTarget.value.trim() });
   };
+
+  componentDidMount() {
+    const parsContacts = JSON.parse(localStorage.getItem(CONTACTS_KEY));
+    if (parsContacts) {
+      this.setState({ contacts: parsContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const newContact = this.state.contacts;
+    const prevContacts = prevState.contacts;
+
+    if (newContact !== prevContacts) {
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(newContact));
+    }
+  }
 
   render() {
     const { filter } = this.state;
